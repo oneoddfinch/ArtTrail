@@ -2,73 +2,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Key Unlock</title>
-  <style>
-    body {
-      background-color: #f5f5f5;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    h1 {
-      margin-top: 40px;
-    }
-    .key-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin: 30px 10px;
-      max-width: 90%;
-    }
-    .key-container img {
-      width: 100px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .key-container img:hover {
-      transform: scale(1.1);
-    }
-    #reward {
-      display: none;
-      margin-top: 30px;
-    }
-    @media screen and (max-width: 600px) {
-      .key-container img {
-        width: 80px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Unlock the Secret</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .box {
+            width: 100%;
+            height: auto;
+            max-width: 600px;
+        }
+        .keys {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        .key {
+            width: 80px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .key:hover {
+            transform: scale(1.1);
+        }
+        #reward {
+            display: none;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            .keys {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .key {
+                width: 60px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Choose the correct key to unlock the loop</h1>
-  <div class="key-container">
-    <img src="key1.png" alt="Key 1" onclick="checkKey(false)">
-    <img src="key2.png" alt="Key 2" onclick="checkKey(false)">
-    <img src="key5-correct.png" alt="Key 5" onclick="checkKey(true)">
-    <img src="key3.png" alt="Key 3" onclick="checkKey(false)">
-    <img src="key4.png" alt="Key 4" onclick="checkKey(false)">
-  </div>
-  <div id="reward">
-    <a href="https://thepurplefinch.com/the-loop" target="_blank">
-      <button style="font-size: 1.2rem; padding: 10px 20px;">Reveal the Secret</button>
-    </a>
-  </div>
-  <script>
-    function checkKey(correct) {
-      if (correct) {
-        document.getElementById('reward').style.display = 'block';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        alert('Try again.');
-      }
-    }
-  </script>
+    <div class="container">
+        <img src="https://thepurplefinch.com/s/images/jewellery%20box.png" alt="Jewellery Box" class="box">
+        <div class="keys">
+            <img src="https://thepurplefinch.com/s/images/key1.png" class="key" onclick="checkKey(1)">
+            <img src="https://thepurplefinch.com/s/images/key2.png" class="key" onclick="checkKey(2)">
+            <img src="https://thepurplefinch.com/s/images/key5-correct.png" class="key" onclick="checkKey(5)">
+            <img src="https://thepurplefinch.com/s/images/key3.png" class="key" onclick="checkKey(3)">
+            <img src="https://thepurplefinch.com/s/images/key4.png" class="key" onclick="checkKey(4)">
+        </div>
+        <div id="reward">
+            <a href="https://thepurplefinch.com/the-loop" style="color: #ffd700; font-size: 20px;">Click here to enter The Loop</a>
+        </div>
+    </div>
+    <script>
+        function checkKey(keyNumber) {
+            if (keyNumber === 5) {
+                document.getElementById('reward').style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
