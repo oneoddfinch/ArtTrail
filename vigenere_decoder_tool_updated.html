@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vigenère Cipher Tool</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #111;
+            color: #f5f5f5;
+            padding: 2em;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            font-size: 1.8em;
+            color: #e8c47b;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 1em;
+            color: #ccc;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.5em;
+            margin-top: 0.5em;
+            font-size: 1em;
+            background-color: #222;
+            color: #f5f5f5;
+            border: 1px solid #444;
+        }
+        button {
+            margin-top: 1em;
+            padding: 0.75em;
+            background-color: #e8c47b;
+            color: #111;
+            font-weight: bold;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d4af5f;
+        }
+        .output {
+            margin-top: 1em;
+            background-color: #222;
+            padding: 1em;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vigenère Cipher Decoder</h1>
+    <label for="keyword">Keyword</label>
+    <input type="text" id="keyword" placeholder="Enter the key ">
+
+    <label for="message">Encoded Message</label>
+    <textarea id="message" rows="4" placeholder="Enter the encoded message here..."></textarea>
+
+    <button onclick="decode()">Decode</button>
+
+    <div class="output" id="result">Decoded message will appear here.</div>
+
+    <script>
+        function decode() {
+            const keyword = document.getElementById('keyword').value.toUpperCase();
+            const message = document.getElementById('message').value.toUpperCase();
+            let result = '';
+            let j = 0;
+
+            for (let i = 0; i < message.length; i++) {
+                const c = message.charCodeAt(i);
+                if (c >= 65 && c <= 90) {
+                    const k = keyword.charCodeAt(j % keyword.length) - 65;
+                    const decodedChar = String.fromCharCode(((c - 65 - k + 26) % 26) + 65);
+                    result += decodedChar;
+                    j++;
+                } else {
+                    result += message[i];
+                }
+            }
+
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+</body>
+</html>
