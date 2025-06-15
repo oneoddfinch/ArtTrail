@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unlock the Secret</title>
+<style>
+  body {
+    background-color: #0f0f0f;
+    color: #fff;
+    font-family: Georgia, serif;
+    text-align: center;
+    padding: 20px;
+  }
+  h1 {
+    font-weight: normal;
+  }
+  .container {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+  .lockbox {
+    margin: 40px auto;
+    width: 300px;
+    position: relative;
+  }
+  .lockbox img {
+    width: 100%;
+  }
+  .keys {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .keys img {
+    width: 100px;
+    cursor: grab;
+  }
+  .dropzone {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 1.2em;
+    display: none;
+  }
+  a.button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #d1a245;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+  <h1>Which key unlocks the truth?</h1>
+  <div class="container">
+    <div class="lockbox">
+      <img src="jewellery box.png" alt="Lock box">
+      <div class="dropzone" id="dropzone"></div>
+    </div>
+    <div class="keys">
+      <img src="key1.png" draggable="true" ondragstart="drag(event)" id="key1">
+      <img src="key2.png" draggable="true" ondragstart="drag(event)" id="key2">
+      <img src="key3.png" draggable="true" ondragstart="drag(event)" id="key3">
+      <img src="key4.png" draggable="true" ondragstart="drag(event)" id="key4">
+      <img src="key5-correct.png" draggable="true" ondragstart="drag(event)" id="key5">
+    </div>
+    <div id="message">
+      You’ve found the key. The loop awaits.<br>
+      <a href="https://thepurplefinch.com/the-loop" class="button" target="_blank">Enter the Loop</a>
+    </div>
+  </div>
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  if (data === "key5") {
+    document.getElementById("message").style.display = "block";
+  } else {
+    alert("That’s not the right key. Try again.");
+  }
+}
+document.getElementById("dropzone").addEventListener("dragover", allowDrop);
+document.getElementById("dropzone").addEventListener("drop", drop);
+</script>
+</body>
+</html>
