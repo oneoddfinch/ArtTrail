@@ -92,9 +92,20 @@
       from { filter: drop-shadow(0 0 5px #aaa); }
       to { filter: drop-shadow(0 0 15px #fff); }
     }
-  </style>
+  
+  #responsive-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #container {
+    width: 1000px;
+    height: 1200px;
+  }
+</style>
 </head>
 <body>
+  <div id="responsive-wrapper">
   <div id="container">
     <video id="video" autoplay muted>
       <source src="The Spy.mp4" type="video/mp4">
@@ -241,6 +252,26 @@
     });
 
     resetAll();
-  </script>
+  
+    const container = document.getElementById('container');
+    const wrapper = document.getElementById('responsive-wrapper');
+
+    function resizeContainer() {
+      const scaleX = window.innerWidth / 1000;
+      const scaleY = window.innerHeight / 1200;
+      const scale = Math.min(scaleX, scaleY);
+
+      container.style.transform = 'scale(' + scale + ')';
+      container.style.transformOrigin = 'top left';
+
+      wrapper.style.width = (1000 * scale) + 'px';
+      wrapper.style.height = (1200 * scale) + 'px';
+    }
+
+    window.addEventListener('resize', resizeContainer);
+    window.addEventListener('orientationchange', resizeContainer);
+    resizeContainer();
+</script>
+  </div>
 </body>
 </html>
