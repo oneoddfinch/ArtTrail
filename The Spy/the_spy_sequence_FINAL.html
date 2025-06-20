@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: auto;
+      cursor: auto;
+    }
+
+    #container {
+      position: relative;
+      width: 1000px;
+      height: 1200px;
+      margin: 0 auto;
+    }
+
+    video, .layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1000px;
+      height: 1200px;
+      object-fit: cover;
+      display: none;
+    }
+
+    video {
+      display: block;
+    }
+
+    .layer {
+      z-index: 15;
+    }
+
+    #magnifier {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    #zoomed-video, #zoomed-still {
+      position: absolute;
+      width: 1000px;
+      height: 1200px;
+      transform: scale(1.3);
+      transform-origin: top left;
+      pointer-events: none;
+    }
+
+    #zoomed-still {
+      display: none;
+    }
+
+    #glass {
+      position: absolute;
+      pointer-events: none;
+      z-index: 100;
+      width: auto;
+      height: auto;
+    }
+
+    #crack1, #crack2, #crack3, #bookscene {
+      z-index: 110;
+    }
+
+    #replay {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 120;
+      display: none;
+      cursor: pointer;
+    }
+
+    .glow {
+      animation: glow 1s infinite alternate;
+      filter: drop-shadow(0 0 10px #f5f5f5);
+    }
+
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 5px #aaa); }
+      to { filter: drop-shadow(0 0 15px #fff); }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <video id="video" autoplay muted>
+      <source src="The Spy.mp4" type="video/mp4">
+    </video>
+    <img id="still" class="layer" src="The_Spy_Still.png" />
+    <img id="crack1" class="layer" src="Crack1.png" />
+    <img id="crack2" class="layer" src="Crack2.png" />
+    <img id="crack3" class="layer" src="Crack3.png" />
+    <img id="bookscene" class="layer" src="Book_Scene.png" />
+    <img id="replay" src="Replay_Button.png" />
+
+    <div id="magnifier">
+      <video id="zoomed-video" muted loop playsinline>
+        <source src="The Spy.mp4" type="video/mp4">
+      </video>
+      <img id="zoomed-still" src="The_Spy_Still.png" />
+    </div>
+    
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const still = document.getElementById('still');
+    const crack1 = document.getElementById('crack1');
+    const crack2 = document.getElementById('crack2');
+    const crack3 = document.getElementById('crack3');
+    const bookscene = document.getElementById('bookscene');
+    const replay = document.getElementById('replay');
+    const magnifier = document.getElementById('magnifier');
+    const zoomedVideo = document.getElementById('zoomed-video');
+    const zoomedStill = document.getElementById('zoomed-still');
+    // const glass = ... (removed)
+
+    const zoomScale = 1.3;
+    const lensSize = 240;
+
+    const layers = [still, crack1, crack2, crack3, bookscene];
+
+    function show(el) {
+      el.style.display = 'block';
+    }
+
+    function hide(el) {
+      el.style.display = 'none';
+    }
+
+    function fadeIn(el, duration = 2000) {
+      el.style.opacity = 0;
+      el.style.display = 'block';
+      let start = null;
+      const step = timestamp => {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        el.style.opacity = Math.min(progress / duration, 1);
+        if (progress < duration) {
+          requestAnimationFrame(step);
+        }
+      };
+      requestAnimationFrame(step);
+    }
+
+    function resetAll() {
+      layers.forEach(hide);
+      hide(replay);
+      show(video);
+      show(magnifier);
+      // show(glass); (removed)
+      zoomedVideo.currentTime = 0;
+      zoomedVideo.play();
+      zoomedStill.style.display = 'none';
+      zoomedVideo.style.display = 'block';
+      startSequence();
+    }
+
+    function startSequence() {
+      video.currentTime = 0;
+      video.play();
+
+      setTimeout(() => {
+        fadeIn(still);
+        zoomedVideo.pause();
+        zoomedVideo.style.display = 'none';
+        zoomedStill.style.display = 'block';
+        setTimeout(() => {
+          fadeIn(crack1);
+          setTimeout(() => {
+            fadeIn(crack2);
+            setTimeout(() => {
+              fadeIn(crack3);
+              crack3.classList.add('glow');
+              enableClick();
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 27000);
+    }
+
+    function enableClick() {
+      crack3.style.pointerEvents = 'auto';
+      crack3.style.cursor = 'pointer';
+      crack3.addEventListener('click', handleClick);
+    }
+
+    function handleClick() {
+      layers.forEach(hide);
+      hide(magnifier);
+      // hide(glass); (removed)
+      fadeIn(bookscene);
+      setTimeout(() => {
+        show(replay);
+      }, 3000);
+    }
+
+    replay.addEventListener('click', () => {
+      crack3.removeEventListener('click', handleClick);
+      crack3.classList.remove('glow');
+      resetAll();
+    });
+
+    function moveMagnifier(x, y) {
+      const offsetX = x - lensSize / 2;
+      const offsetY = y - lensSize / 2;
+
+      magnifier.style.left = offsetX + 'px';
+      magnifier.style.top = offsetY + 'px';
+
+      zoomedVideo.style.left = -(x * zoomScale - lensSize / 2) + 'px';
+      zoomedVideo.style.top = -(y * zoomScale - lensSize / 2) + 'px';
+
+      zoomedStill.style.left = zoomedVideo.style.left;
+      zoomedStill.style.top = zoomedVideo.style.top;
+
+      // glass.style.left (removed) = offsetX + 'px';
+      // glass.style.top (removed) = offsetY + 'px';
+    }
+
+    document.addEventListener('mousemove', e => {
+      moveMagnifier(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      moveMagnifier(touch.clientX, touch.clientY);
+    });
+
+    resetAll();
+  </script>
+</body>
+</html>
