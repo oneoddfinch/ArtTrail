@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
@@ -93,10 +94,44 @@
       to { filter: drop-shadow(0 0 15px #fff); }
     }
   </style>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  video {
+    width: 100%;
+    height: auto;
+    display: block;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      width: 100vw;
+      height: auto;
+      overflow-x: scroll;
+    }
+
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+</style>
+
 </head>
 <body>
   <div id="container">
-    <video id="video" autoplay muted>
+    <video playsinline autoplay muted id="video" autoplay muted>
       <source src="The Spy.mp4" type="video/mp4">
     </video>
     <img id="still" class="layer" src="The_Spy_Still.png" />
@@ -107,7 +142,7 @@
     <img id="replay" src="Replay_Button.png" />
 
     <div id="magnifier">
-      <video id="zoomed-video" muted loop playsinline>
+      <video playsinline autoplay muted id="zoomed-video" muted loop playsinline>
         <source src="The Spy.mp4" type="video/mp4">
       </video>
       <img id="zoomed-still" src="The_Spy_Still.png" />
