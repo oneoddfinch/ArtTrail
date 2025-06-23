@@ -85,12 +85,20 @@
       });
       video.style.display = "block";
       video.currentTime = 0;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          console.warn("Autoplay blocked. Waiting for user interaction.");
-        });
-      }
+
+      const tryPlay = () => {
+        const promise = video.play();
+        if (promise !== undefined) {
+          promise.catch(() => {
+            // mobile autoplay fallback: trigger play after short user delay
+            setTimeout(() => {
+              video.play().catch(() => console.log("Mobile autoplay still blocked."));
+            }, 500);
+          });
+        }
+      };
+
+      tryPlay();
     }
 
     video.addEventListener("canplay", () => {
@@ -131,6 +139,7 @@
 
     replayButton.addEventListener("click", resetAll);
 
+    // Kick off
     resetAll();
   </script>
 </body>
