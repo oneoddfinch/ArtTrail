@@ -1,221 +1,129 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<style>
-    html, body {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Spy</title>
+  <style>
+    * {
       margin: 0;
       padding: 0;
-      background: #000;
-      overflow: auto;
-      cursor: auto;
+      box-sizing: border-box;
     }
-
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
     #container {
       position: relative;
-      width: 1000px;
-      height: 1200px;
-      margin: 0 auto;
+      width: 100vw;
+      height: 100vh;
     }
-
-    video, .layer {
+    video, img {
       position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       top: 0;
       left: 0;
-      width: 1000px;
-      height: 1200px;
-      object-fit: cover;
       display: none;
     }
-
-    video {
+    #video {
       display: block;
     }
-
-    .layer {
-      z-index: 15;
+    .fade-in {
+      animation: fadeIn 2s forwards;
     }
-
-    
-
-    #zoomed-video, 
-
-    
-
-    #glass {
-      position: absolute;
-      pointer-events: none;
-      z-index: 100;
-      width: auto;
-      height: auto;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-
-    #crack1, #crack2, #crack3, #bookscene {
-      z-index: 110;
-    }
-
-    #replay {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 120;
-      display: none;
-      cursor: pointer;
-    }
-
     .glow {
-      animation: glow 1s infinite alternate;
-      filter: drop-shadow(0 0 10px #f5f5f5);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 5px white); }
+      50% { filter: drop-shadow(0 0 20px white); }
+    }
+    #Replay_Button {
+      position: absolute;
+      cursor: pointer;
+      display: none;
+      opacity: 0;
     }
 
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 5px #aaa); }
-      to { filter: drop-shadow(0 0 15px #fff); }
+    #Book_Scene {
+      opacity: 0;
     }
-  
-  #responsive-wrapper {
-    position: relative;
-    overflow: hidden;
-  }
-
-  #container {
-    width: 1000px;
-    height: 1200px;
-  }
-</style>
+  </style>
 </head>
 <body>
-<div id="responsive-wrapper">
-<div id="container">
-<video autoplay="" id="video" muted="" playsinline="">
-<source src="The Spy.mp4" type="video/mp4"/>
-</video>
-<img class="layer" id="still" src="The_Spy_Still.png"/>
-<img class="layer" id="crack1" src="Crack1.png"/>
-<img class="layer" id="crack2" src="Crack2.png"/>
-<img class="layer" id="crack3" src="Crack3.png"/>
-<img class="layer" id="bookscene" src="Book_Scene.png"/>
-<img id="replay" src="Replay_Button.png"/>
-</div>
-<script>
-    const video = document.getElementById('video');
-    const still = document.getElementById('still');
-    const crack1 = document.getElementById('crack1');
-    const crack2 = document.getElementById('crack2');
-    const crack3 = document.getElementById('crack3');
-    const bookscene = document.getElementById('bookscene');
-    const replay = document.getElementById('replay');
+  <div id="container">
+    <video id="video" src="The_Spy.mp4" autoplay muted></video>
+    <img id="The_Spy_Still" src="The_Spy_Still.png" />
+    <img id="Crack1" src="Crack1.png" />
+    <img id="Crack2" src="Crack2.png" />
+    <img id="Crack3" src="Crack3.png" />
+    <img id="Book_Scene" src="Book_Scene.png" />
+    <img id="Replay_Button" src="Replay_Button.png" />
+  </div>
 
-    const layers = [still, crack1, crack2, crack3, bookscene];
-
-    function show(el) {
-      el.style.display = 'block';
-    }
-
-    function hide(el) {
-      el.style.display = 'none';
-    }
-
-    function fadeIn(el, duration = 2000) {
-      el.style.opacity = 0;
-      el.style.display = 'block';
-      let start = null;
-      const step = timestamp => {
-        if (!start) start = timestamp;
-        const progress = timestamp - start;
-        el.style.opacity = Math.min(progress / duration, 1);
-        if (progress < duration) {
-          requestAnimationFrame(step);
-        }
-      };
-      requestAnimationFrame(step);
-    }
+  <script>
+    const video = document.getElementById("video");
+    const still = document.getElementById("The_Spy_Still");
+    const crack1 = document.getElementById("Crack1");
+    const crack2 = document.getElementById("Crack2");
+    const crack3 = document.getElementById("Crack3");
+    const bookScene = document.getElementById("Book_Scene");
+    const replayButton = document.getElementById("Replay_Button");
 
     function resetAll() {
-      layers.forEach(hide);
-      hide(replay);
-      show(video);
-      startSequence();
-    }
-
-    function startSequence() {
+      [still, crack1, crack2, crack3, bookScene, replayButton].forEach(el => {
+        el.style.display = "none";
+        el.className = "";
+      });
+      video.style.display = "block";
       video.currentTime = 0;
       video.play();
-
-      video.onended = () => {
-        fadeIn(still);
-        setTimeout(() => { fadeIn(crack1);
-          fadeIn(crack1);
-          setTimeout(() => { fadeIn(crack2);
-            setTimeout(() => { fadeIn(crack3);
-              crack3.classList.add('glow');
-              enableClick();
-            }, 1000);
-          }, 1000);
-        }, 1000);
-      };
     }
 
-    function enableClick() {
-      crack3.style.pointerEvents = 'auto';
-      crack3.style.cursor = 'pointer';
-      crack3.addEventListener('click', handleClick);
-    }
+    video.addEventListener("timeupdate", () => {
+      if (video.currentTime >= 25 && !still.classList.contains("fade-in")) {
+        still.style.display = "block";
+        crack1.style.display = "block";
+        still.classList.add("fade-in");
+        crack1.classList.add("fade-in");
 
-    function handleClick() {
-      layers.forEach(hide);
-      fadeIn(bookscene);
-      setTimeout(() => {
-        show(replay);
-      }, 3000);
-    }
+        setTimeout(() => {
+          crack2.style.display = "block";
+          crack2.classList.add("fade-in");
+        }, 2000);
 
-    replay.addEventListener('click', () => {
-      crack3.removeEventListener('click', handleClick);
-      crack3.classList.remove('glow');
-      resetAll();
+        setTimeout(() => {
+          crack3.style.display = "block";
+          crack3.classList.add("fade-in");
+          [crack1, crack2, crack3].forEach(el => el.classList.add("glow"));
+        }, 4000);
+      }
     });
 
-    const container = document.getElementById('container');
-    const wrapper = document.getElementById('responsive-wrapper');
+    [crack1, crack2, crack3].forEach(crack => {
+      crack.addEventListener("click", () => {
+        [still, crack1, crack2, crack3].forEach(el => el.style.display = "none");
+        bookScene.style.display = "block";
+        replayButton.style.display = "block";
+        bookScene.classList.add("fade-in");
+        setTimeout(() => {
+          replayButton.classList.add("fade-in");
+        }, 1000);
+      });
+});
 
-    function resizeContainer() {
-      const scaleX = window.innerWidth / 1000;
-      const scaleY = window.innerHeight / 1200;
-      const scale = Math.min(scaleX, scaleY);
-
-      container.style.transform = 'scale(' + scale + ')';
-      container.style.transformOrigin = 'top left';
-
-      wrapper.style.width = (1000 * scale) + 'px';
-      wrapper.style.height = (1200 * scale) + 'px';
-    }
-
-    window.addEventListener('resize', resizeContainer);
-    window.addEventListener('orientationchange', resizeContainer);
-    resizeContainer();
+    replayButton.addEventListener("click", resetAll);
 
     resetAll();
-    
-    setTimeout(() => {
-      fadeIn(still);
-      setTimeout(() => {
-        fadeIn(crack1);
-        setTimeout(() => {
-          fadeIn(crack2);
-          setTimeout(() => {
-            fadeIn(crack3);
-            crack3.classList.add('glow');
-            enableClick();
-          }, 2000);
-        }, 2000);
-      }, 2000);
-    }, 22000);
-    </script>
-</div>
+  </script>
 </body>
 </html>
