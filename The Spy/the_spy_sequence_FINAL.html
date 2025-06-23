@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Spy</title>
   <style>
     * {
@@ -53,7 +53,6 @@
       display: none;
       opacity: 0;
     }
-
     #Book_Scene {
       opacity: 0;
     }
@@ -61,7 +60,7 @@
 </head>
 <body>
   <div id="container">
-    <video id="video" src="The_Spy_v2.mp4" autoplay muted></video>
+    <video id="video" src="The_Spy_v2.mp4" autoplay muted playsinline preload="auto"></video>
     <img id="The_Spy_Still" src="The_Spy_Still.png" />
     <img id="Crack1" src="Crack1.png" />
     <img id="Crack2" src="Crack2.png" />
@@ -86,8 +85,17 @@
       });
       video.style.display = "block";
       video.currentTime = 0;
-      video.play();
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          console.warn("Autoplay blocked. Waiting for user interaction.");
+        });
+      }
     }
+
+    video.addEventListener("canplay", () => {
+      video.play().catch(() => {});
+    });
 
     video.addEventListener("timeupdate", () => {
       if (video.currentTime >= 25 && !still.classList.contains("fade-in")) {
